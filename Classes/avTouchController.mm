@@ -2,7 +2,7 @@
  
  File: avTouchController.mm
  Abstract: n/a
- Version: 1.3
+ Version: 1.4.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -149,9 +149,6 @@ void RouteChangeListener(	void *                  inClientData,
 
 - (void)awakeFromNib
 {
-	// Make the array to store our AVAudioPlayer objects
-	soundFiles = [[NSMutableArray alloc] initWithCapacity:3];
-
 	playBtnBG = [[UIImage imageNamed:@"play.png"] retain];
 	pauseBtnBG = [[UIImage imageNamed:@"pause.png"] retain];
 
@@ -167,8 +164,9 @@ void RouteChangeListener(	void *                  inClientData,
 	currentTime.adjustsFontSizeToFitWidth = YES;
 	progressBar.minimumValue = 0.0;	
 	
-	// Load the array with the sample file
+	// Load the the sample file, use mono or stero sample
 	NSURL *fileURL = [[NSURL alloc] initFileURLWithPath: [[NSBundle mainBundle] pathForResource:@"sample" ofType:@"m4a"]];
+    //NSURL *fileURL = [[NSURL alloc] initFileURLWithPath: [[NSBundle mainBundle] pathForResource:@"sample2ch" ofType:@"m4a"]];
 
 	self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];	
 	if (self.player)
@@ -308,7 +306,14 @@ void RouteChangeListener(	void *                  inClientData,
 		NSLog(@"Playback finished unsuccessfully");
 		
 	[p setCurrentTime:0.];
-	[self updateViewForPlayerState:p];
+	if (inBackground)
+	{
+		[self updateViewForPlayerStateInBackground:p];
+	}
+	else
+	{
+		[self updateViewForPlayerState:p];
+	}
 }
 
 - (void)playerDecodeErrorDidOccur:(AVAudioPlayer *)p error:(NSError *)error

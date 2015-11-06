@@ -72,7 +72,6 @@
 	NSTimer								*updateTimer;
 	NSTimer								*rewTimer;
 	NSTimer								*ffwTimer;
-	NSMutableArray						*soundFiles;
 	
 	BOOL								inBackground;
 }

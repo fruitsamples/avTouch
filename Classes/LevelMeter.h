@@ -68,6 +68,7 @@ typedef struct LevelMeterColorThreshold {
 	BOOL						_vertical;
 	BOOL						_variableLightIntensity;
 	UIColor						*_bgColor, *_borderColor;
+    CGFloat                     _scaleFactor;
 }
 
 // The current level, from 0 - 1

@@ -68,7 +68,7 @@
 	BOOL						_vertical;
 	BOOL						_useGL;
 	
-	CFAbsoluteTime				_peakFalloffLastFire;
+	CFAbsoluteTime				_peakFalloffLastFire;;
 }
 
 - (void)setPlayer:(AVAudioPlayer*)v;

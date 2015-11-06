@@ -71,7 +71,7 @@
 	if (self = [super initWithFrame:frame]) {
 		_showsPeaks = YES;
 		_channelNumbers = [[NSArray alloc] initWithObjects:[NSNumber numberWithInt:0], nil];
-		_vertical = NO;
+		_vertical = ([self frame].size.width < [self frame].size.height) ? YES : NO; // NO;
 		_useGL = YES;
 		_meterTable = new MeterTable(kMinDBvalue);
 		[self layoutSubLevelMeters];
@@ -85,7 +85,7 @@
 	if (self = [super initWithCoder:coder]) {
 		_showsPeaks = YES;
 		_channelNumbers = [[NSArray alloc] initWithObjects:[NSNumber numberWithInt:0], nil];
-		_vertical = NO;
+		_vertical = ([self frame].size.width < [self frame].size.height) ? YES : NO; // NO;
 		_useGL = YES;
 		_meterTable = new MeterTable(kMinDBvalue);
 		[self layoutSubLevelMeters];

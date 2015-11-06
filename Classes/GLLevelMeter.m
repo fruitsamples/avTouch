@@ -1,8 +1,8 @@
 /*
  
  File: GLLevelMeter.m
- Abstract: n/a
- Version: 1.3
+ Abstract: A Level Meter
+ Version: 1.3.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,8 +42,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
- 
+ Copyright (C) 2010-2011 Apple Inc. All Rights Reserved.
  
  */
 
@@ -114,9 +113,11 @@
 	_numLights = 0;
 	_numColorThresholds = 3;
 	_variableLightIntensity = YES;
-	_bgColor = [[UIColor alloc] initWithRed:0. green:0. blue:0. alpha:0.6];
+	
+    _bgColor = [[UIColor alloc] initWithRed:0. green:0. blue:0. alpha:0.6];
 	_borderColor = [[UIColor alloc] initWithRed:0. green:0. blue:0. alpha:1.];
-	_colorThresholds = (LevelMeterColorThreshold*)malloc(3 * sizeof(LevelMeterColorThreshold));
+	    
+    _colorThresholds = (LevelMeterColorThreshold*)malloc(3 * sizeof(LevelMeterColorThreshold));
 	_colorThresholds[0].maxValue = 0.6;
 	_colorThresholds[0].color = [[UIColor alloc] initWithRed:0. green:1. blue:0. alpha:1.];
 	_colorThresholds[1].maxValue = 0.9;
@@ -124,14 +125,19 @@
 	_colorThresholds[2].maxValue = 1.;
 	_colorThresholds[2].color = [[UIColor alloc] initWithRed:1. green:0. blue:0. alpha:1.];
 	_vertical = ([self frame].size.width < [self frame].size.height) ? YES : NO;
-
+    
+    if ([self respondsToSelector:@selector(setContentScaleFactor:)]){
+        _scaleFactor = self.contentScaleFactor = [[UIScreen mainScreen] scale];
+    } else {
+        _scaleFactor = 1.0;
+    }
+    
 	CAEAGLLayer *eaglLayer = (CAEAGLLayer*) self.layer;
 	
 	eaglLayer.opaque = YES;
 	
 	eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
 									[NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
-	
 	
 	_context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
 	
@@ -165,23 +171,19 @@
 	//glClearColor(0., 0., 0., 1.);
 	glClear(GL_COLOR_BUFFER_BIT);
 	
-	
-	
 	glPushMatrix();
 	
 	CGRect bds;
 	
 	if (_vertical)
 	{
-		glTranslatef(0., [self bounds].size.height, 0.);
-		glScalef(1., -1., 1.);
-		bds = [self bounds];
+        glScalef(1., -1., 1.);
+		bds = CGRectMake(0., -1., [self bounds].size.width * _scaleFactor, [self bounds].size.height * _scaleFactor);
 	} else {
-		glTranslatef(0., [self bounds].size.height, 0.);
+		glTranslatef(0., [self bounds].size.height * _scaleFactor, 0.);
 		glRotatef(-90., 0., 0., 1.);
-		bds = CGRectMake(0., 0., [self bounds].size.height, [self bounds].size.width);
+		bds = CGRectMake(0., 1., [self bounds].size.height * _scaleFactor, [self bounds].size.width * _scaleFactor);
 	}
-	
 	
 	if (_numLights == 0)
 	{
@@ -228,8 +230,6 @@
 	}
 	else
 	{
-		
-		
 		int light_i;
 		CGFloat lightMinVal = 0.;
 		CGFloat insetAmount, lightVSpace;
@@ -272,7 +272,7 @@
 			
 			lightRect = CGRectMake(
 								   0., 
-								   bds.size.height * ((CGFloat)(light_i) / (CGFloat)_numLights), 
+								   bds.origin.y * (bds.size.height * ((CGFloat)(light_i) / (CGFloat)_numLights)), 
 								   bds.size.width,
 								   bds.size.height * (1. / (CGFloat)_numLights)
 								   );
@@ -284,7 +284,7 @@
 				CGRectGetMinX(lightRect), CGRectGetMaxY(lightRect),  
 				CGRectGetMaxX(lightRect), CGRectGetMaxY(lightRect),  
 			};			
-			
+            
 			glVertexPointer(2, GL_FLOAT, 0, vertices);
 			
 			glColor4f(1., 0., 0., 1.);
