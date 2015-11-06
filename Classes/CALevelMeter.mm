@@ -2,7 +2,7 @@
 
     File: CALevelMeter.mm
 Abstract: n/a
- Version: 1.0.1
+ Version: 1.1
 
 Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
 Inc. ("Apple") in consideration of your agreement to the following
@@ -206,7 +206,7 @@ bail:
 	if (!success)
 	{
 		for (LevelMeter *thisMeter in _subLevelMeters) { thisMeter.level = 0.; [thisMeter setNeedsDisplay]; }
-		printf("ERROR: metering failed\n");
+		NSLog(@"ERROR: metering failed\n");
 	}
 }
 

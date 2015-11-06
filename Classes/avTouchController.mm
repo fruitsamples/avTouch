@@ -2,7 +2,7 @@
 
     File: avTouchController.mm
 Abstract: n/a
- Version: 1.0.1
+ Version: 1.1
 
 Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
 Inc. ("Apple") in consideration of your agreement to the following
@@ -48,6 +48,10 @@ Copyright (C) 2009 Apple Inc. All Rights Reserved.
 */
 
 #import "avTouchController.h"
+
+#import <Foundation/Foundation.h>
+#import <AudioToolbox/AudioToolbox.h>
+
 #include "CALevelMeter.h"
 
 // amount to skip on rewind or fast forward
@@ -57,67 +61,26 @@ Copyright (C) 2009 Apple Inc. All Rights Reserved.
 
 @implementation avTouchController
 
+@synthesize _fileName;
+@synthesize _playButton;
+@synthesize _ffwButton;
+@synthesize _rewButton;
 @synthesize _volumeSlider;
 @synthesize _progressBar;
 @synthesize _currentTime;
 @synthesize _duration;
-@synthesize _updateTimer;
 @synthesize _lvlMeter_in;
+@synthesize _updateTimer;
 @synthesize _player;
 
--(void)updateCurrentTimeForPlayer:(AVAudioPlayer *)player
-{
-	self._currentTime.text = [NSString stringWithFormat:@"%d:%02d", (int)player.currentTime / 60, (int)player.currentTime % 60, nil];
-	self._progressBar.value = player.currentTime;
-}
+- (void)updateCurrentTime;
+- (void)updateViewForPlayerState;
+- (void)updateViewForPlayerInfo;
 
-- (void)updateCurrentTime
-{
-	[self updateCurrentTimeForPlayer:self._player];
-}
-
-- (void)updateViewForPlayerState:(AVAudioPlayer *)player
-{
-	[self updateCurrentTimeForPlayer:player];
-
-	if (_updateTimer) 
-		[_updateTimer invalidate];
-		
-	if (player.playing)
-	{
-		[_playButton setImage:((player.playing == YES) ? _pauseBtnBG : _playBtnBG) forState:UIControlStateNormal];
-		[_lvlMeter_in setPlayer:player];
-		_updateTimer = [NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(updateCurrentTime) userInfo:player repeats:YES];
-	}
-	else
-	{
-		[_playButton setImage:((player.playing == YES) ? _pauseBtnBG : _playBtnBG) forState:UIControlStateNormal];
-		[_lvlMeter_in setPlayer:nil];
-		_updateTimer = nil;
-	}
-	
-}
-
--(void)updateViewForPlayerInfo:(AVAudioPlayer*)player
-{
-	self._duration.text = [NSString stringWithFormat:@"%d:%02d", (int)player.duration / 60, (int)player.duration % 60, nil];
-	self._progressBar.maximumValue = player.duration;
-	self._volumeSlider.value = player.volume;
-}
-
-- (void)rewind
-{
-	AVAudioPlayer *player = _rewTimer.userInfo;
-	player.currentTime-= SKIP_TIME;
-	[self updateCurrentTimeForPlayer:player];
-}
+- (void)setupAudioSession;
 
 - (void)ffwd
-{
-	AVAudioPlayer *player = _ffwTimer.userInfo;
-	player.currentTime+= SKIP_TIME;	
-	[self updateCurrentTimeForPlayer:player];
-}
+- (void)rewind
 
 - (void)awakeFromNib
 {
@@ -143,46 +106,36 @@ Copyright (C) 2009 Apple Inc. All Rights Reserved.
 	if (self._player)
 	{
 		_fileName.text = [NSString stringWithFormat: @"%@ (%d ch.)", [[self._player.url relativePath] lastPathComponent], self._player.numberOfChannels, nil];
-		[self updateViewForPlayerInfo:self._player];
-		[self updateViewForPlayerState:self._player];
+		[self updateViewForPlayerInfo];
+		[self updateViewForPlayerState];
 	}
 	
-	OSStatus result = AudioSessionInitialize(NULL, NULL, NULL, NULL);
-	if (result)
-		printf("Error initializing audio session! %d\n", result);
-	
-	UInt32 category = kAudioSessionCategory_SoloAmbientSound;
-	result = AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(category), &category);
-	if (result)
-		printf("Error setting audio category! %d\n", result);
-		
 	[fileURL release];
-
 }
 
--(void)pausePlaybackForPlayer:(AVAudioPlayer*)player
+- (void)pausePlayback
 {
-	[player pause];
-	[self updateViewForPlayerState:player];
+	[self._player pause];
+	[self updateViewForPlayerState];
 }
 
--(void)startPlaybackForPlayer:(AVAudioPlayer*)player
+- (void)startPlayback
 {
-	if ([player play])
+	if ([self._player play])
 	{
-		[self updateViewForPlayerState:player];
-		player.delegate = self;
+		[self updateViewForPlayerState];
+		self._player.delegate = self;
 	}
 	else
-		NSLog(@"Could not play %@\n", player.url);
+		NSLog(@"Could not play %@\n", self._player.url);
 }
 
 - (IBAction)playButtonPressed:(UIButton *)sender
 {
 	if (self._player.playing == YES)
-		[self pausePlaybackForPlayer: self._player];
+		[self pausePlayback];
 	else
-		[self startPlaybackForPlayer: self._player];
+		[self startPlayback];
 }
 
 - (IBAction)rewButtonPressed:(UIButton *)sender
@@ -217,15 +170,121 @@ Copyright (C) 2009 Apple Inc. All Rights Reserved.
 - (IBAction)progressSliderMoved:(UISlider *)sender
 {
 	self._player.currentTime = sender.value;
-	[self updateCurrentTimeForPlayer:self._player];
+	[self updateCurrentTime];
 }
 
 - (void)dealloc
 {
 	[super dealloc];
-	[_updateTimer release];
 	[_playBtnBG release];
+
+	[_fileName release];
+	[_playButton release];
+	[_ffwButton release];
+	[_rewButton release];
+	[_volumeSlider release];
+	[_progressBar release];
+	[_currentTime release];
+	[_duration release];
+	[_lvlMeter_in release];
+	[_updateTimer release];
 	[_player release];
+}
+
+#pragma mark playback methods
+
+- (void)ffwd
+{
+	AVAudioPlayer *player = _ffwTimer.userInfo;
+	player.currentTime+= SKIP_TIME;	
+	[self updateCurrentTime];
+}
+
+- (void)rewind
+{
+	AVAudioPlayer *player = _rewTimer.userInfo;
+	player.currentTime-= SKIP_TIME;
+	[self updateCurrentTime];
+}
+
+
+#pragma mark UI state handlers
+
+-(void)updateCurrentTime
+{
+	self._currentTime.text = [NSString stringWithFormat:@"%d:%02d", (int)self._player.currentTime / 60, (int)self._player.currentTime % 60, nil];
+	self._progressBar.value = self._player.currentTime;
+}
+
+- (void)updateViewForPlayerState
+{
+	[self updateCurrentTime];
+
+	if (self._updateTimer) 
+		[self._updateTimer invalidate];
+		
+	if (self._player.playing)
+	{
+		[_playButton setImage:((self._player.playing == YES) ? _pauseBtnBG : _playBtnBG) forState:UIControlStateNormal];
+		[_lvlMeter_in setPlayer:self._player];
+		self._updateTimer = [NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(updateCurrentTime) userInfo:self._player repeats:YES];
+	}
+	else
+	{
+		[_playButton setImage:((self._player.playing == YES) ? _pauseBtnBG : _playBtnBG) forState:UIControlStateNormal];
+		[_lvlMeter_in setPlayer:nil];
+		_updateTimer = nil;
+	}
+	
+}
+
+-(void)updateViewForPlayerInfo
+{
+	self._duration.text = [NSString stringWithFormat:@"%d:%02d", (int)self._player.duration / 60, (int)self._player.duration % 60, nil];
+	self._progressBar.maximumValue = self._player.duration;
+	self._volumeSlider.value = self._player.volume;
+}
+
+#pragma mark AudioSession methods
+
+void RouteChangeListener(	void *                  inClientData,
+							AudioSessionPropertyID	inID,
+							UInt32                  inDataSize,
+							const void *            inData)
+{
+	avTouchController* This = (avTouchController*)inClientData;
+	
+	if (inID == kAudioSessionProperty_AudioRouteChange) {
+		
+		CFDictionaryRef routeDict = (CFDictionaryRef)inData;
+		NSNumber* reasonValue = (NSNumber*)CFDictionaryGetValue(routeDict, CFSTR(kAudioSession_AudioRouteChangeKey_Reason));
+		
+		int reason = [reasonValue intValue];
+
+		if (reason == kAudioSessionRouteChangeReason_OldDeviceUnavailable) {
+
+			[This pausePlayback];
+		}
+	}
+}
+
+- (void)setupAudioSession
+{
+	AVAudioSession *session = [AVAudioSession sharedInstance];
+	NSError *error = nil;
+	
+	[session setCategory: AVAudioSessionCategoryPlayback error: &error];
+	if (error != nil)
+		NSLog(@"Failed to set category on AVAudioSession");
+	
+	// AudioSession and AVAudioSession calls can be used interchangeably
+	OSStatus result = AudioSessionAddPropertyListener(kAudioSessionProperty_AudioRouteChange, RouteChangeListener, self);
+	if (result) NSLog(@"Could not add property listener! %d\n", result);
+	
+	BOOL active = [session setActive: YES error: nil];
+	if (!active)
+		NSLog(@"Failed to set category on AVAudioSession");
+
 }
 
 #pragma mark AVAudioPlayer delegate methods
@@ -236,7 +295,7 @@ Copyright (C) 2009 Apple Inc. All Rights Reserved.
 		NSLog(@"Playback finished unsuccessfully");
 		
 	[player setCurrentTime:0.];
-	[self updateViewForPlayerState:player];
+	[self updateViewForPlayerState];
 }
 
 - (void)playerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error
@@ -248,12 +307,12 @@ Copyright (C) 2009 Apple Inc. All Rights Reserved.
 - (void)audioPlayerBeginInterruption:(AVAudioPlayer *)player
 {
 	// the object has already been paused,	we just need to update UI
-	[self updateViewForPlayerState:player];
+	[self updateViewForPlayerState];
 }
 
 - (void)audioPlayerEndInterruption:(AVAudioPlayer *)player
 {
-	[self startPlaybackForPlayer:player];
+	[self startPlayback];
 }
 
 @end

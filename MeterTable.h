@@ -2,7 +2,7 @@
 
     File: MeterTable.h
 Abstract: Class for handling conversion from linear scale to dB
- Version: 1.0.1
+ Version: 1.1
 
 Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
 Inc. ("Apple") in consideration of your agreement to the following

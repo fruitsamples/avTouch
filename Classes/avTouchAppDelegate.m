@@ -2,7 +2,7 @@
 
     File: avTouchAppDelegate.m
 Abstract: App delegate
- Version: 1.0.1
+ Version: 1.1
 
 Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
 Inc. ("Apple") in consideration of your agreement to the following

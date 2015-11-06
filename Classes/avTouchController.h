@@ -2,7 +2,7 @@
 
     File: avTouchController.h
 Abstract: Base app controller class
- Version: 1.0.1
+ Version: 1.1
 
 Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
 Inc. ("Apple") in consideration of your agreement to the following
@@ -48,7 +48,6 @@ Copyright (C) 2009 Apple Inc. All Rights Reserved.
 */
 
 #import <UIKit/UIKit.h>
-#import <AudioToolbox/AudioToolbox.h>
 #import <AVFoundation/AVFoundation.h>
 
 @class CALevelMeter;
@@ -59,7 +58,6 @@ Copyright (C) 2009 Apple Inc. All Rights Reserved.
 	IBOutlet UIButton					*_playButton;
 	IBOutlet UIButton					*_ffwButton;
 	IBOutlet UIButton					*_rewButton;
-	IBOutlet UIActivityIndicatorView	*_isPlayingView;
 	IBOutlet UISlider					*_volumeSlider;
 	IBOutlet UISlider					*_progressBar;
 	IBOutlet UILabel					*_currentTime;
@@ -82,12 +80,16 @@ Copyright (C) 2009 Apple Inc. All Rights Reserved.
 - (IBAction)volumeSliderMoved:(UISlider *)sender;
 - (IBAction)progressSliderMoved:(UISlider *)sender;
 
-@property (nonatomic, retain)	UISlider		*_volumeSlider;
-@property (nonatomic, retain)	UISlider		*_progressBar;
-@property (nonatomic, retain)	UILabel			*_currentTime;
-@property (nonatomic, retain)	UILabel			*_duration;
+@property (nonatomic, retain) UILabel*			_fileName;
+@property (nonatomic, retain) UIButton*			_playButton;
+@property (nonatomic, retain) UIButton*			_ffwButton;
+@property (nonatomic, retain) UIButton*			_rewButton;
+@property (nonatomic, retain) UISlider*			_volumeSlider;
+@property (nonatomic, retain) UISlider*			_progressBar;
+@property (nonatomic, retain) UILabel*			_currentTime;
+@property (nonatomic, retain) UILabel*			_duration;
+@property (nonatomic, retain) CALevelMeter*		_lvlMeter_in;
 
-@property (nonatomic, retain)	NSTimer			*_updateTimer;
-@property (retain)				CALevelMeter	*_lvlMeter_in;
-@property (nonatomic, assign)	AVAudioPlayer	*_player;
+@property (nonatomic, retain)	NSTimer*		_updateTimer;
+@property (nonatomic, assign)	AVAudioPlayer*	_player;
 @end

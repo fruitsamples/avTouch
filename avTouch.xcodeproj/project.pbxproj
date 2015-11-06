@@ -30,11 +30,11 @@
 		F768E63B0E78578700715E09 /* MeterTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F768E6390E78578700715E09 /* MeterTable.cpp */; };
 		F768E6710E7859DD00715E09 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F768E6700E7859DD00715E09 /* OpenGLES.framework */; };
 		F768E6770E7859F000715E09 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F768E6760E7859F000715E09 /* QuartzCore.framework */; };
-		F76AC2F20EE5D6D90028CEB8 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F76AC2F10EE5D6D90028CEB8 /* AudioToolbox.framework */; };
 		F7BEC5F30E95414B00E56EE2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7BEC5F20E95414B00E56EE2 /* AVFoundation.framework */; };
 		F7C4694C0E7B12DF00A2E1ED /* avTouchController.mm in Sources */ = {isa = PBXBuildFile; fileRef = F7C4694B0E7B12DF00A2E1ED /* avTouchController.mm */; };
 		F7C4694E0E7B133200A2E1ED /* CALevelMeter.mm in Sources */ = {isa = PBXBuildFile; fileRef = F7C4694D0E7B133200A2E1ED /* CALevelMeter.mm */; };
 		F7C742080EA7FAE100657C30 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = F7C741C20EA7F7CE00657C30 /* icon.png */; };
+		F7C81C5E1015272A00E57710 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7C81C5D1015272A00E57710 /* AudioToolbox.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,12 +70,12 @@
 		F768E63A0E78578700715E09 /* MeterTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeterTable.h; sourceTree = "<group>"; };
 		F768E6700E7859DD00715E09 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		F768E6760E7859F000715E09 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		F76AC2F10EE5D6D90028CEB8 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
 		F77554350E771B2200A99FCA /* avTouchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = avTouchController.h; sourceTree = "<group>"; };
 		F7BEC5F20E95414B00E56EE2 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		F7C4694B0E7B12DF00A2E1ED /* avTouchController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = avTouchController.mm; sourceTree = "<group>"; };
 		F7C4694D0E7B133200A2E1ED /* CALevelMeter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CALevelMeter.mm; sourceTree = "<group>"; };
 		F7C741C20EA7F7CE00657C30 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		F7C81C5D1015272A00E57710 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,7 +89,7 @@
 				F768E6710E7859DD00715E09 /* OpenGLES.framework in Frameworks */,
 				F768E6770E7859F000715E09 /* QuartzCore.framework in Frameworks */,
 				F7BEC5F30E95414B00E56EE2 /* AVFoundation.framework in Frameworks */,
-				F76AC2F20EE5D6D90028CEB8 /* AudioToolbox.framework in Frameworks */,
+				F7C81C5E1015272A00E57710 /* AudioToolbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -158,7 +158,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F76AC2F10EE5D6D90028CEB8 /* AudioToolbox.framework */,
+				F7C81C5D1015272A00E57710 /* AudioToolbox.framework */,
 				F7BEC5F20E95414B00E56EE2 /* AVFoundation.framework */,
 				F768E6760E7859F000715E09 /* QuartzCore.framework */,
 				F768E6700E7859DD00715E09 /* OpenGLES.framework */,
@@ -320,7 +320,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = iphoneos2.2;
+				SDKROOT = iphoneos3.0;
 			};
 			name = Debug;
 		};
@@ -333,7 +333,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = iphoneos2.2;
+				SDKROOT = iphoneos3.0;
 			};
 			name = Release;
 		};
