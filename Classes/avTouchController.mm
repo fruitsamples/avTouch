@@ -2,7 +2,7 @@
 
     File: avTouchController.mm
 Abstract: n/a
- Version: 1.1
+ Version: 1.2
 
 Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
 Inc. ("Apple") in consideration of your agreement to the following
@@ -42,7 +42,7 @@ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
 STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-Copyright (C) 2009 Apple Inc. All Rights Reserved.
+Copyright (C) 2010 Apple Inc. All Rights Reserved.
 
 
 */
@@ -59,6 +59,19 @@ Copyright (C) 2009 Apple Inc. All Rights Reserved.
 // amount to play between skips
 #define SKIP_INTERVAL .2
 
+@interface avTouchController(PrivateMethods)
+
+- (void)updateCurrentTime;
+- (void)updateViewForPlayerState;
+- (void)updateViewForPlayerInfo;
+
+- (void)setupAudioSession;
+
+- (void)ffwd;
+- (void)rewind;
+
+@end
+
 @implementation avTouchController
 
 @synthesize _fileName;
@@ -72,15 +85,6 @@ Copyright (C) 2009 Apple Inc. All Rights Reserved.
 @synthesize _lvlMeter_in;
 @synthesize _updateTimer;
 @synthesize _player;
-
-- (void)updateCurrentTime;
-- (void)updateViewForPlayerState;
-- (void)updateViewForPlayerInfo;
-
-- (void)setupAudioSession;
-
-- (void)ffwd
-- (void)rewind
 
 - (void)awakeFromNib
 {
