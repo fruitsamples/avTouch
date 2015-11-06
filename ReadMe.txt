@@ -3,7 +3,7 @@ avTouch
 ===========================================================================
 DESCRIPTION:
 
-avTouch demonstrates basic use of AVFoundation, Core Animation, and Core Graphics Services on the iPhone for basic playback of audio files.
+The avTouch sample demonstrates use of the AV Foundation framework for basic playback of an audio file.
 
 The code in avTouch uses AVFoundation to play an audio file containing AAC audio data. The application uses CoreGraphics and OpenGL to display volume meters for the audio being played.
 
@@ -20,8 +20,8 @@ avTouch does not demonstrate how to play multiple files, nor does it provide mor
 ===========================================================================
 RELATED INFORMATION:
 
-Core Audio Overview, November 2008
-
+AV Foundation Framework Reference, April 2010
+Multimedia Programming Guide, April 2010
 
 ===========================================================================
 SPECIAL CONSIDERATIONS:
@@ -31,18 +31,23 @@ none
 ===========================================================================
 BUILD REQUIREMENTS:
 
-Mac OS X v10.5.5, Xcode 3.1, iPhone OS 2.2, iPhone SDK for iPhone OS 2.2 and later
+Mac OS X v10.6.4, Xcode 3.2, iPhone OS 4.0, iPhone SDK for iPhone OS 4.0 and later
 
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-Simulator: Mac OS X v10.5.5, iPhone SDK 2.2 and later
-iPhone: iPhone OS 2.2
+Simulator: Mac OS X v10.6.4, iPhone SDK 4.0 and later
+iPhone: iPhone OS 4.0
 
 
 ===========================================================================
 PACKAGING LIST:
+
+avTouchController.h
+avTouchController.mm
+
+The avTouchController defines the main controller class, responsible for managing the AVAudioPlayer object and handling user input
 
 CALevelMeter.h
 CALevelMeter.mm
@@ -64,16 +69,10 @@ avTouchAppDelegate.m
 
 The avTouchAppDelegate class defines the application delegate object, responsible for adding the application's view to the application window.
 
-
 avTouchViewController.h
 avTouchViewController.m
 
 The avTouchViewController class defines the view controller, responsible for handling rotations
 
-avTouchController.h
-avTouchController.m
-
-The avTouchController defines the main controller class, responsible for managing the AVAudioPlayer object and handling user input
-
 ================================================================================
-Copyright (C) 2008 Apple Inc. All rights reserved.
+Copyright (C) 2010 Apple Inc. All rights reserved.
